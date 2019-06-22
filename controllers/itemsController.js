@@ -7,8 +7,7 @@ const { sanitizeBody } = require('express-validator/filter');
 const mongoDB = 'mongodb+srv://admin:123@cluster0-apxng.mongodb.net/test';
 const mongoose = require('mongoose');
 const async = require('async');
-const multer = require('multer');
-const upload = multer({dest: '../public/img/'});
+
 
 exports.item_list = async function(req,res) {
     const name = req.user.info.name;
@@ -64,27 +63,7 @@ exports.item_add_get = async function(req,res,next) {
 
 exports.item_add_post = function(req,res,next){
     //res.send(req.files[0].originalname);
-    mongoose.connect(mongoDB, function(error){
-        if(error)
-            throw error;
-        let product = new Product({
-            _id: new mongoose.Types.ObjectId(),
-            name: req.body.name,
-            manufacturer: req.body.manufacturer,
-            category: req.body.category,
-            img1: '/img/'+req.files[0].originalname,
-            img2: '/img/'+req.files[1].originalname,
-            img3: '/img/'+req.files[2].originalname,
-            price: req.body.price,
-            status: true,
-            info: req.body.info,
-            isDeleted: false
-            });
-        product.save(function(error){
-            if(error) throw error;
-            res.redirect('list');
-        });
-    });
+    res.redirect("list");
 };
 
 exports.item_update_get = async function(req,res) {
@@ -101,36 +80,7 @@ exports.item_update_get = async function(req,res) {
 };
 
 exports.item_update_post = function(req,res,next) {
-    mongoose.connect(mongoDB, function(error){
-        if(error)
-            throw error;
-        var id = mongoose.Types.ObjectId(req.params.id);
-        Product.findOne({_id:id}, function(err,foundProduct){
-            if(err) {
-                console.log(err);
-                res.status(500).send();
-            }else{
-                if(!foundProduct){
-                    res.status(404).send();
-                }else{
-                    foundProduct.name = req.body.name;
-                    foundProduct.manufacturer = req.body.manufacturer;
-                    foundProduct.category = req.body.category;
-                    foundProduct.img1 = '/img/'+req.files[0].originalname;
-                    foundProduct.img2 = '/img/'+req.files[1].originalname;
-                    foundProduct.img3 = '/img/'+req.files[2].originalname;
-                    foundProduct.price = req.body.price;
-                    foundProduct.status = true;
-                    foundProduct.info = req.body.info;
-
-                    foundProduct.save(function (err) {
-                        if(error) throw error;
-                        res.redirect('../list');
-                    });
-                }
-            }
-        })
-    });
+    res.redirect('../list');
 };
 
 exports.item_delete = function(req,res){

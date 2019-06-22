@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 const hbs = require('express-handlebars');
 const { ensureAuthenticated, forwardAuthenticated } = require('../config/auth');
-const multer = require('multer');
+;
 
 var categoryController=require('../controllers/categoryController');
 var usersController=require('../controllers/usersController');
@@ -30,37 +30,9 @@ router.get('/orders/delete/:id',ensureAuthenticated, ordersController.order_dele
 router.get('/items/list',ensureAuthenticated,item_controller.item_list);
 router.get('/items/add',ensureAuthenticated,item_controller.item_add_get);
 
-const storage = multer.diskStorage({
-    destination: function (req, file, callback) {
-        callback(null, ' ./../../customer-website/public/img');
-    },
-    filename: function (req, file, callback) {
-        callback(null, file.originalname);
-    }
-});
-
-const fileFilter = (req, file, cb) => {
-    // reject a file
-    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
-        cb(null, true);
-    } else {
-        cb(null, false);
-    }
-};
-
-
-const upload = multer({
-    storage : storage,
-    fileFilter: fileFilter
-});/*.fields([
-    {name: 'img1'},
-    {name: 'img2'},
-    {name: 'img3'},
-]);*/
-
-router.post('/items/add',upload.array('img',3),ensureAuthenticated,item_controller.item_add_post);
+router.post('/items/add',ensureAuthenticated,item_controller.item_add_post);
 router.get('/items/update/:id',ensureAuthenticated,item_controller.item_update_get);
-router.post('/items/update/:id',upload.array('img',3),ensureAuthenticated,item_controller.item_update_post);
+router.post('/items/update/:id',ensureAuthenticated,item_controller.item_update_post);
 router.get('/items/delete/:id',ensureAuthenticated,item_controller.item_delete);
 router.post('/items/list/block/:id', ensureAuthenticated, item_controller.item_change_block);
 
